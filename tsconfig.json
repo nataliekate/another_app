@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es2018", // Or a higher version like es2020 for modern features
+    "module": "commonjs",
+    "lib": [
+      "es2018",
+      "dom"
+    ], // 'dom' is needed if you use any browser types in your EJS (unlikely for server.ts)
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist", // Output directory for compiled JS (optional, but good practice)
+    "rootDir": "./",
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  },
+  "include": [
+    "server.ts",
+    "views/**/*.ejs"
+  ], // Include server.ts and EJS files for type checking (though EJS itself isn't TS)
+  "exclude": [
+    "node_modules"
+  ]
+}

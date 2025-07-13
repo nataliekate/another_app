@@ -6,16 +6,16 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0">
   <title>🧊</title>
+  <!-- Link to your custom CSS file - Ensure this path is correct -->
   <link rel="stylesheet"
     href="/styles.css">
 </head>
 
 <body>
-  <div class="container">
-    <h1>🧊🧊🧊🧊</h1>
+  <div class="app-container">
+    <h1 class="app-heading">🧊🧊🧊🧊</h1>
 
-    <% if
-      (statusMessage)
+    <% if(statusMessage)
       {
       %>
       <div
@@ -26,54 +26,60 @@
       <% }
         %>
 
-        <form id="generate_form"
-          action="/generate-file"
+        <form action="/generate-file"
           method="POST">
-          <div class="form-field">
-            <label for="name">Your Name</label>
-            <input type="text"
-              id="name"
-              name="name"
-              placeholder="Enter your name"
+          <div class="form-field-group">
+            <label for="configData"
+              class="form-label">Config Data (JSON)</label>
+            <textarea id="configData"
+              name="configData"
+              style="font-family:'Courier New', Courier, monospace; font-size: 1rem;"
+              placeholder='Paste your JSON object here, e.g., {"key": "value", "number": 123}'
+              rows="15"
+              class="form-textarea"
               required
-              value="<%= typeof formData !== 'undefined' && formData.name ? formData.name : '' %>">
+              onchange="validateJsonInput()"><%= typeof formData !== 'undefined' && formData.configData ? formData.configData : '' %></textarea>
+            <div class="validation-error">
+              <p id="json-error-message"
+                style="color:red; font-size: .8rem;"></p>
+            </div>
           </div>
 
-          <div class="form-field">
-            <label for="email">Your Email</label>
-            <input type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              required
-              value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
-          </div>
-
-          <div class="form-field">
-            <label for="message">Message (Optional)</label>
-            <textarea id="message"
-              name="message"
-              placeholder="Enter your message"
-              rows="4"><%= typeof formData !== 'undefined' && formData.message ? formData.message : '' %></textarea>
-          </div>
-
-          <div class="form-field">
-            <label for="configFileName">Desired File Name (without
-              .json)</label>
-            <input type="text"
-              id="configFileName"
-              name="configFileName"
-              placeholder="e.g., my-settings"
-              required
-              value="<%= typeof formData !== 'undefined' && formData.configFileName ? formData.configFileName : 'my-config' %>">
-          </div>
-
-          <div class="btn-group">
-            <button class="primary" type="submit">Generate & Download File</button>
-            <button>Reset</button>
-          </div>
+          <button type="submit"
+            class="form-button"
+            id="submit-button">Generate & Download File</button>
         </form>
   </div>
+  <script>
+    // Get references to elements
+    const configDataTextarea = document.getElementById('configData');
+    const jsonErrorMessage = document.getElementById('json-error-message');
+    const submitButton = document.getElementById('submit-button');
+
+    // Validation function called on input
+    function validateJsonInput() {
+      const inputValue = configDataTextarea.value.trim();
+
+      if (inputValue === '') {
+        jsonErrorMessage.textContent = ''; // Clear error if empty
+        submitButton.disabled = true; // Disable if empty
+        return;
+      }
+
+      try {
+        JSON.parse(inputValue);
+        jsonErrorMessage.textContent = ''; // Clear error
+        submitButton.disabled = false; // Enable button
+      } catch (e) {
+        debugger;
+        jsonErrorMessage.textContent = e.message;
+        submitButton.disabled = true; // Disable button
+      }
+    }
+
+    // Run validation on page load to set initial button state
+    document.addEventListener('DOMContentLoaded', validateJsonInput);
+  </script>
 </body>
 
 </html>
